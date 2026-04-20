@@ -160,6 +160,184 @@
   .hero{
     padding: 100px 0 140px;
     position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-circuit{
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+    mask-image: radial-gradient(ellipse 90% 75% at 50% 35%, rgba(0,0,0,0.95), transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 75% at 50% 35%, rgba(0,0,0,0.95), transparent 85%);
+  }
+  .hero-bg-circuit svg{ width: 100%; height: 100%; display:block; }
+  .hero .wrap{ position: relative; z-index: 1; }
+
+  /* Live status badge */
+  .live-badge{
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(74,222,128,0.08), rgba(0,217,255,0.05));
+    border: 1px solid rgba(74,222,128,0.3);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(10px);
+  }
+  .live-badge .live-dot{
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success), 0 0 16px rgba(74,222,128,0.5);
+    animation: livePulse 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes livePulse{
+    0%,100%{ transform: scale(1); opacity: 1; }
+    50%{ transform: scale(1.25); opacity: .55; }
+  }
+  .live-badge .sep{
+    width: 1px; height: 12px;
+    background: rgba(255,255,255,0.18);
+  }
+  .live-badge .mono-tag{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--cyan);
+    letter-spacing: 0.18em;
+    font-weight: 700;
+  }
+
+  /* Terminal panel */
+  .terminal-panel{
+    background: linear-gradient(180deg, rgba(13,13,20,0.96), rgba(8,8,14,0.98));
+    border: 1px solid rgba(0,217,255,0.28);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      0 40px 100px -20px rgba(0,217,255,0.22),
+      0 0 0 1px rgba(0,217,255,0.06) inset,
+      0 0 80px rgba(0,217,255,0.06) inset;
+    backdrop-filter: blur(20px);
+    position: relative;
+  }
+  .terminal-panel::before{
+    content:"";
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,217,255,0.7), transparent);
+  }
+  .term-head{
+    display:flex; align-items:center; gap: 14px;
+    padding: 13px 18px;
+    background: rgba(255,255,255,0.025);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .term-dots{ display:flex; gap: 7px; }
+  .term-dots span{
+    width: 11px; height: 11px; border-radius: 50%;
+    display: inline-block;
+  }
+  .term-dots .d1{ background: #ff5f57; }
+  .term-dots .d2{ background: #febc2e; }
+  .term-dots .d3{ background: #28c840; }
+  .term-title{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--cyan);
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 700;
+  }
+  .term-title .live-mini{
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 6px var(--success);
+    animation: livePulse 1.4s infinite ease-in-out;
+  }
+  .term-tag{
+    margin-left: auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.18em;
+  }
+  .term-body{
+    padding: 20px 22px 16px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    line-height: 1.95;
+    color: var(--text-2);
+  }
+  .term-line{ display: block; }
+  .term-line .prompt{ color: var(--cyan); margin-right: 8px; }
+  .term-line .cmt{ color: var(--text-3); }
+  .term-line .ok{ color: var(--success); margin-left: 6px; }
+  .term-line .k{ color: var(--accent-2); }
+  .term-line .s{ color: var(--cyan); }
+
+  .term-output{
+    margin: 16px 0 8px;
+    padding: 16px 18px;
+    background: rgba(0,217,255,0.04);
+    border: 1px solid rgba(0,217,255,0.2);
+    border-left: 3px solid var(--cyan);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 13.5px;
+    line-height: 1.9;
+    letter-spacing: 0.01em;
+    min-height: 70px;
+  }
+  .typing-cursor{
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background: var(--cyan);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1s steps(2) infinite;
+    box-shadow: 0 0 6px var(--cyan-glow);
+  }
+  @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+  .term-stats{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 14px 18px 18px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.25);
+  }
+  .term-stat{
+    text-align: center;
+    padding: 12px 8px;
+    background: rgba(0,217,255,0.05);
+    border: 1px solid rgba(0,217,255,0.2);
+    border-radius: 10px;
+    transition: border-color .2s, background .2s;
+  }
+  .term-stat:hover{
+    border-color: rgba(0,217,255,0.5);
+    background: rgba(0,217,255,0.1);
+  }
+  .term-stat .v{
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .term-stat .l{
+    display: block;
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--text-2);
+    letter-spacing: 0.04em;
   }
   .hero-grid{
     display: grid;
@@ -242,7 +420,6 @@
   /* ------ Hero Visual: AI Dashboard mock ------ */
   .hero-visual{
     position: relative;
-    height: 560px;
   }
   .orbit{
     position:absolute; inset: -40px;
@@ -943,11 +1120,43 @@
 
 <!-- =============== HERO =============== -->
 <section class="hero">
+  <div class="hero-bg-circuit" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="circuit-grid" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+          <path d="M0 60 L120 60 M60 0 L60 120" stroke="rgba(0,217,255,0.18)" stroke-width="0.6" fill="none"/>
+          <path d="M0 0 L40 0 L40 40 L80 40 L80 0 L120 0" stroke="rgba(0,217,255,0.3)" stroke-width="0.7" fill="none"/>
+          <path d="M0 120 L40 120 L40 80 L80 80 L80 120 L120 120" stroke="rgba(167,139,255,0.25)" stroke-width="0.7" fill="none"/>
+          <path d="M0 60 L20 60 L20 20" stroke="rgba(0,217,255,0.35)" stroke-width="0.7" fill="none"/>
+          <path d="M120 60 L100 60 L100 100" stroke="rgba(0,217,255,0.35)" stroke-width="0.7" fill="none"/>
+          <circle cx="40" cy="40" r="2.5" fill="rgba(0,217,255,0.7)"/>
+          <circle cx="80" cy="40" r="2.5" fill="rgba(0,217,255,0.7)"/>
+          <circle cx="40" cy="80" r="2.5" fill="rgba(167,139,255,0.6)"/>
+          <circle cx="80" cy="80" r="2.5" fill="rgba(167,139,255,0.6)"/>
+          <circle cx="60" cy="60" r="3.5" fill="none" stroke="rgba(0,217,255,0.5)" stroke-width="0.8"/>
+          <rect x="14" y="58" width="8" height="4" fill="rgba(0,217,255,0.5)" rx="0.5"/>
+          <rect x="98" y="58" width="8" height="4" fill="rgba(0,217,255,0.5)" rx="0.5"/>
+        </pattern>
+        <radialGradient id="circuit-glow" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stop-color="rgba(0,217,255,0.15)"/>
+          <stop offset="60%" stop-color="rgba(167,139,255,0.06)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+      <rect width="1440" height="900" fill="url(#circuit-grid)"/>
+      <rect width="1440" height="900" fill="url(#circuit-glow)"/>
+    </svg>
+  </div>
+
   <div class="wrap hero-grid">
     <div class="reveal">
-      <div class="eyebrow">
-        <span class="dot"></span>
-        <span class="mono">JP-MADE · AI POWERED</span>
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        <span>🟢 AI稼働中</span>
+        <span class="sep"></span>
+        <span>毎日自動投稿</span>
+        <span class="sep"></span>
+        <span class="mono-tag">24h ONLINE</span>
       </div>
       <h1 class="hero-title">
         SNSは、<br>
@@ -977,57 +1186,41 @@
     </div>
 
     <div class="hero-visual reveal">
-      <div class="orbit"></div>
-      <div class="orbit o2"></div>
-
-      <svg class="connectors" viewBox="0 0 500 560" preserveAspectRatio="none">
-        <path d="M 120 80 Q 240 180 250 280"/>
-        <path d="M 380 260 Q 320 280 250 280"/>
-        <path d="M 170 490 Q 200 380 250 280"/>
-      </svg>
-
-      <div class="ai-core">
-        <div class="ai-core-inner"></div>
-        <div class="ai-core-label">AI ENGINE v4.2</div>
-      </div>
-
-      <div class="post-card c1">
-        <div class="pc-head">
-          <div class="pc-icon x">𝕏</div>
-          <div class="pc-name">@your_brand</div>
-          <div class="pc-badge mono">AUTO</div>
+      <div class="terminal-panel">
+        <div class="term-head">
+          <div class="term-dots">
+            <span class="d1"></span>
+            <span class="d2"></span>
+            <span class="d3"></span>
+          </div>
+          <div class="term-title">
+            <span class="live-mini"></span>
+            LIVE GENERATION
+          </div>
+          <div class="term-tag">v4.2</div>
         </div>
-        <div class="pc-body">本日8時の朝活投稿、自動生成・予約完了。エンゲージ予測 +24%</div>
-        <div class="pc-meta">
-          <span>♥ <b>128</b></span>
-          <span>↻ <b>32</b></span>
-          <span>💬 <b>14</b></span>
+        <div class="term-body">
+          <div class="term-line"><span class="cmt">// AI が投稿を生成中...</span></div>
+          <div class="term-line"><span class="prompt">▸</span> <span class="k">topic</span> = <span class="s">"朝活 / 雑学"</span></div>
+          <div class="term-line"><span class="prompt">▸</span> <span class="k">tone</span> = <span class="s">"親しみやすい"</span></div>
+          <div class="term-line"><span class="prompt">▸</span> <span class="k">generate</span>() <span class="ok">✓</span></div>
+          <div class="term-output">
+            <span id="typing-text"></span><span class="typing-cursor"></span>
+          </div>
         </div>
-      </div>
-
-      <div class="post-card c2">
-        <div class="pc-head">
-          <div class="pc-icon ig">◉</div>
-          <div class="pc-name">instagram</div>
-          <div class="pc-badge mono">AUTO</div>
-        </div>
-        <div class="pc-body">キャプション＋ハッシュタグを最適化。リーチ推定 3.2k。</div>
-        <div class="pc-meta">
-          <span>♥ <b>412</b></span>
-          <span>💾 <b>58</b></span>
-        </div>
-      </div>
-
-      <div class="post-card c3">
-        <div class="pc-head">
-          <div class="pc-icon threads">@</div>
-          <div class="pc-name">threads</div>
-          <div class="pc-badge mono">AUTO</div>
-        </div>
-        <div class="pc-body">トレンド連動で話題ワードを自動挿入しました。</div>
-        <div class="pc-meta">
-          <span>♥ <b>89</b></span>
-          <span>💬 <b>11</b></span>
+        <div class="term-stats">
+          <div class="term-stat">
+            <span class="v">▲24%</span>
+            <span class="l">エンゲージ予測</span>
+          </div>
+          <div class="term-stat">
+            <span class="v">08:00</span>
+            <span class="l">配信予約</span>
+          </div>
+          <div class="term-stat">
+            <span class="v">3</span>
+            <span class="l">SNSへ同時投稿</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1452,6 +1645,24 @@
     });
   }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
   revealEls.forEach(el=>{ if(el.classList.contains('pending')) io.observe(el); });
+
+  // Typing animation in LIVE GENERATION terminal
+  (function(){
+    const target = document.getElementById('typing-text');
+    if(!target) return;
+    const text = '本日の雑学：カフェインの効果は6時間続くって知ってた？☕️ #朝活 #習慣化';
+    let i = 0;
+    function type(){
+      if(i <= text.length){
+        target.textContent = text.slice(0, i);
+        i++;
+        setTimeout(type, 55 + Math.random() * 45);
+      } else {
+        setTimeout(()=>{ i = 0; target.textContent = ''; type(); }, 3500);
+      }
+    }
+    setTimeout(type, 600);
+  })();
 
   // Smooth anchor scroll
   document.querySelectorAll('a[href^="#"]').forEach(a=>{
