@@ -408,6 +408,8 @@
   .typing-demo{
     width: 100%;
     max-width: 480px;
+    /* Reserve final height up-front so the loop never resizes the card */
+    min-height: 400px;
     background: linear-gradient(180deg, rgba(20,20,30,0.85), rgba(14,14,22,0.85));
     border: 1px solid rgba(0,217,255,0.25);
     border-radius: 20px;
@@ -476,12 +478,16 @@
     background: rgba(0,0,0,0.3);
     border: 1px solid var(--border);
     border-radius: 12px;
-    min-height: 110px;
+    /* Lock the stage to its final size so the typing animation never
+       triggers a layout shift (was: min-height: 110px) */
+    min-height: 220px;
     font-family: "Noto Sans JP", sans-serif;
     font-size: 14px;
     line-height: 1.7;
     color: var(--text);
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
   .demo-stage .tag{
     display: inline-flex;
@@ -507,7 +513,7 @@
   .demo-meta{
     display: flex;
     gap: 16px;
-    margin-top: 14px;
+    margin-top: auto;             /* push to the bottom of .demo-stage */
     padding-top: 12px;
     border-top: 1px solid var(--border);
     font-family: "JetBrains Mono", monospace;
@@ -516,6 +522,19 @@
     letter-spacing: 0.05em;
   }
   .demo-meta span b{ color: var(--cyan); font-weight: 600; margin-right: 3px; }
+
+  /* Layout-shift-free reveal: keep the slot, just toggle visibility+opacity */
+  #demoMetaLine,
+  .demo-meta {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .4s;
+  }
+  #demoMetaLine.visible,
+  .demo-meta.visible {
+    visibility: visible;
+    opacity: 1;
+  }
 
   /* ------ Hero Visual: AI Dashboard mock ------ */
   .hero-visual{
@@ -1549,14 +1568,14 @@
         </div>
         <div class="demo-body">
           <div class="demo-line"><span class="prompt">$</span><span id="demoStatus">Generating post...</span></div>
-          <div class="demo-line" id="demoMetaLine" style="opacity:0;">
+          <div class="demo-line" id="demoMetaLine">
             <span class="dim">▸ model:</span><span class="acc">bazzlr-jp-v4.2</span>
             <span class="dim">· topic:</span><span class="acc">朝の雑学</span>
           </div>
           <div class="demo-stage">
             <div class="tag">POST PREVIEW · AUTO</div>
             <div class="typed" id="demoTyped"></div>
-            <div class="demo-meta" id="demoMetaBottom" style="opacity:0;">
+            <div class="demo-meta" id="demoMetaBottom">
               <span><b>▲24%</b>エンゲージ予測</span>
               <span><b>08:00</b>配信予約</span>
               <span><b>3</b>SNSへ同時投稿</span>
@@ -2237,7 +2256,7 @@
     async function run(){
       // show "Generating post..." briefly
       await sleep(1400);
-      if(metaLine){ metaLine.style.transition = 'opacity .4s'; metaLine.style.opacity = 1; }
+      if(metaLine) metaLine.classList.add('visible');
       await sleep(600);
       if(status) status.textContent = "Generated ✓";
       await sleep(200);
@@ -2247,12 +2266,12 @@
         await sleep(28 + Math.random() * 40);
       }
       await sleep(300);
-      if(metaBottom){ metaBottom.style.transition = 'opacity .5s'; metaBottom.style.opacity = 1; }
+      if(metaBottom) metaBottom.classList.add('visible');
       await sleep(5000);
-      // loop: clear and restart
+      // loop: clear and restart (slots stay reserved, just hide content)
       typed.textContent = '';
-      if(metaBottom) metaBottom.style.opacity = 0;
-      if(metaLine) metaLine.style.opacity = 0;
+      if(metaBottom) metaBottom.classList.remove('visible');
+      if(metaLine) metaLine.classList.remove('visible');
       if(status) status.textContent = "Generating post...";
       await sleep(800);
       run();
