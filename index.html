@@ -1455,8 +1455,10 @@
   /* ============ Platforms (対応SNS) ============ */
   .platforms-grid{
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
   }
   .platform-card{
     position: relative;
@@ -1481,15 +1483,6 @@
   .pf-icon.pf-x{ background: #000; border: 1px solid #2a2a2a; }
   .pf-icon.pf-th{ background: #000; border: 1px solid #2a2a2a; }
   .pf-icon.pf-ig{ background: linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); }
-  .pf-icon.pf-line{ background: #06c755; }
-  .pf-icon.pf-tt{ background: #000; border: 1px solid #2a2a2a; position: relative; }
-  .pf-icon.pf-tt::before,
-  .pf-icon.pf-tt::after{
-    content:""; position:absolute; inset: 0; border-radius: inherit;
-    background: radial-gradient(circle at 30% 40%, #25f4ee 0%, transparent 40%),
-                radial-gradient(circle at 70% 60%, #fe2c55 0%, transparent 40%);
-    opacity: .35;
-  }
   .pf-name{
     font-size: 16px;
     font-weight: 700;
@@ -1528,7 +1521,7 @@
     color: var(--text-3);
   }
 
-  /* soon card — LINE */
+  /* soon card variant (kept for future "近日対応" use) */
   .platform-card.soon{
     border-color: rgba(0,217,255,0.35);
     background:
@@ -1603,10 +1596,16 @@
   }
 
   @media (max-width: 960px){
-    .platforms-grid{ grid-template-columns: repeat(2, 1fr); }
+    .platforms-grid{
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 560px;
+    }
   }
   @media (max-width: 480px){
-    .platforms-grid{ grid-template-columns: 1fr; }
+    .platforms-grid{
+      grid-template-columns: 1fr;
+      max-width: 360px;
+    }
   }
 
   /* ============ Responsive ============ */
@@ -2087,23 +2086,6 @@
         <div class="pf-status coming"><span class="dot"></span>2026年7月対応予定（審査中）</div>
       </div>
 
-      <div class="platform-card soon reveal">
-        <div class="shimmer"></div>
-        <div class="pf-badge-soon">COMING SOON</div>
-        <div class="pf-icon pf-line">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.89 1.89 5.42 4.7 6.84-.2.72-.72 2.6-.83 3.01-.13.5.18.49.38.36.16-.1 2.53-1.72 3.55-2.41.72.1 1.46.16 2.2.16 5.52 0 10-3.58 10-8S17.52 3 12 3z" fill="#fff"/></svg>
-        </div>
-        <div class="pf-name">LINE公式アカウント</div>
-        <div class="pf-sub mono">OFFICIAL ACCOUNT</div>
-        <div class="pf-status"><span class="dot"></span>近日対応</div>
-      </div>
-
-      <div class="platform-card reveal">
-        <div class="pf-icon pf-tt"><span style="position:relative; z-index:1;">♪</span></div>
-        <div class="pf-name">TikTok</div>
-        <div class="pf-sub mono">SHORT VIDEO</div>
-        <div class="pf-status dev"><span>◌</span>開発中</div>
-      </div>
     </div>
   </div>
 </section>
