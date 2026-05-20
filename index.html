@@ -131,6 +131,88 @@
   }
   .nav-login:hover{ color: var(--text); }
 
+  /* ============ Mobile hamburger ============ */
+  .nav-hamburger{
+    display: none;
+    width: 40px; height: 40px;
+    align-items: center; justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text);
+    transition: background .2s, border-color .2s;
+  }
+  .nav-hamburger:hover{ background: rgba(255,255,255,0.04); border-color: var(--text-muted); }
+  .nav-hamburger:focus-visible{ outline: 2px solid var(--cyan); outline-offset: 2px; }
+  .nav-hamburger .ham-bars{ display: block; }
+  .nav-hamburger .ham-close{ display: none; }
+  .nav-hamburger[aria-expanded="true"] .ham-bars{ display: none; }
+  .nav-hamburger[aria-expanded="true"] .ham-close{ display: block; }
+
+  .nav-mobile-panel{
+    position: fixed;
+    inset: 68px 0 auto 0;
+    background: rgba(13,13,20,0.97);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    z-index: 49;
+    transform: translateY(-12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .18s ease, opacity .18s ease;
+    max-height: calc(100vh - 68px);
+    overflow-y: auto;
+  }
+  .nav-mobile-panel.is-open{
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav-mobile-panel .nav-mobile-inner{
+    padding: 18px 20px 24px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .nav-mobile-panel a.mobile-link{
+    color: var(--text-2);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    text-decoration: none;
+  }
+  .nav-mobile-panel a.mobile-link:last-of-type{ border-bottom: none; }
+  .nav-mobile-panel .mobile-divider{
+    height: 1px;
+    background: var(--border);
+    margin: 12px 0 8px;
+  }
+  .nav-mobile-panel .mobile-actions{
+    display: flex; flex-direction: column; gap: 10px;
+    padding-top: 8px;
+  }
+  .nav-mobile-panel .mobile-actions a{ width: 100%; text-align: center; }
+  .nav-mobile-backdrop{
+    position: fixed;
+    inset: 68px 0 0 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 48;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+  }
+  .nav-mobile-backdrop.is-open{
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (max-width: 767px){
+    .nav-links{ display: none; }
+    .nav-cta{ display: none; }
+    .nav-hamburger{ display: flex; }
+  }
+
   /* ============ Beta badge & banner (Phase: closed beta) ============ */
   .beta-badge {
     display: inline-block;
@@ -1663,8 +1745,44 @@
       <a href="https://app.aibazzlr.com/login" class="nav-login">ログイン</a>
       <a href="https://app.aibazzlr.com/signup" class="btn btn-primary btn-sm">無料で始める</a>
     </div>
+    <button
+      type="button"
+      class="nav-hamburger"
+      id="navHamburger"
+      aria-controls="navMobilePanel"
+      aria-expanded="false"
+      aria-label="メニューを開く"
+    >
+      <svg class="ham-bars" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+        <line x1="4" y1="7" x2="20" y2="7"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="17" x2="20" y2="17"/>
+      </svg>
+      <svg class="ham-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18"/>
+        <line x1="18" y1="6" x2="6" y2="18"/>
+      </svg>
+    </button>
   </div>
 </nav>
+
+<div class="nav-mobile-backdrop" id="navMobileBackdrop" aria-hidden="true"></div>
+<div class="nav-mobile-panel" id="navMobilePanel" role="dialog" aria-label="メニュー" aria-hidden="true">
+  <div class="wrap nav-mobile-inner">
+    <a class="mobile-link" href="#pain">課題</a>
+    <a class="mobile-link" href="#features">機能</a>
+    <a class="mobile-link" href="#cases">事例</a>
+    <a class="mobile-link" href="#platforms">対応SNS</a>
+    <a class="mobile-link" href="#steps">使い方</a>
+    <a class="mobile-link" href="#pricing">料金</a>
+    <a class="mobile-link" href="#faq">FAQ</a>
+    <div class="mobile-divider"></div>
+    <div class="mobile-actions">
+      <a class="nav-login" style="text-align:center; padding:12px 8px;" href="https://app.aibazzlr.com/login">ログイン</a>
+      <a class="btn btn-primary btn-sm" href="https://app.aibazzlr.com/signup">無料で始める</a>
+    </div>
+  </div>
+</div>
 
 <main>
 
@@ -2590,6 +2708,45 @@
       }
     });
   });
+
+  // Mobile hamburger menu — toggle on the button, close on outside / esc /
+  // any in-panel link click. Body scroll-lock while open so the page
+  // behind the panel doesn't ghost-scroll.
+  (function navMobile(){
+    const btn = document.getElementById('navHamburger');
+    const panel = document.getElementById('navMobilePanel');
+    const backdrop = document.getElementById('navMobileBackdrop');
+    if(!btn || !panel || !backdrop) return;
+    const prevBodyOverflow = { value: '' };
+    function setOpen(open){
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+      panel.classList.toggle('is-open', open);
+      backdrop.classList.toggle('is-open', open);
+      panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+      if(open){
+        prevBodyOverflow.value = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = prevBodyOverflow.value;
+      }
+    }
+    btn.addEventListener('click', ()=>{
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      setOpen(!expanded);
+    });
+    backdrop.addEventListener('click', ()=> setOpen(false));
+    document.addEventListener('keydown', e=>{
+      if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') setOpen(false);
+    });
+    panel.querySelectorAll('a').forEach(a=>{
+      a.addEventListener('click', ()=> setOpen(false));
+    });
+    // Close if user drags the window past the mobile breakpoint.
+    window.addEventListener('resize', ()=>{
+      if(window.innerWidth >= 768 && btn.getAttribute('aria-expanded') === 'true') setOpen(false);
+    });
+  })();
 </script>
 
 </body>
