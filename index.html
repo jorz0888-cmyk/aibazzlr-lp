@@ -122,6 +122,14 @@
   }
   .nav-links a:hover{ color: var(--text); }
   .nav-cta{ display:flex; gap: 10px; align-items:center; }
+  .nav-login{
+    color: var(--text-muted);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color .2s;
+    padding: 9px 8px;
+  }
+  .nav-login:hover{ color: var(--text); }
 
   /* ============ Beta badge & banner (Phase: closed beta) ============ */
   .beta-badge {
@@ -1652,7 +1660,8 @@
       <a href="#faq">FAQ</a>
     </div>
     <div class="nav-cta">
-      <a href="#waitlist" class="btn btn-primary btn-sm">Betaウェイトリスト</a>
+      <a href="https://app.aibazzlr.com/login" class="nav-login">ログイン</a>
+      <a href="https://app.aibazzlr.com/signup" class="btn btn-primary btn-sm">無料で始める</a>
     </div>
   </div>
 </nav>
